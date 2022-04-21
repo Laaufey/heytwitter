@@ -1,0 +1,35 @@
+% include("header", title="Login")
+
+<main>
+  <h1>Login</h1>
+  <form action="/login" method="POST">
+    <div>
+      % if error == "user_email":
+      <h3>Please ender a valid email</h3>
+      % end
+      <label for="">Email:</label>
+      <input
+        class="sign_up_email"
+        name="user_email"
+        type="text"
+        placeholder="email"
+        value="{{user_email or ''}}"
+      />
+    </div>
+    <div>
+      % if error == "user_password":
+      <h3>Please enter a valid password</h3>
+      % end
+      <label for="">Password: (min 6 - max 50 characters)</label>
+      <input
+        class="sign_up_email"
+        name="user_password"
+        type="password"
+        placeholder="password"
+      />
+    </div>
+    <button class="tweetBtn">Login</button>
+  </form>
+</main>
+
+% include("footer")
