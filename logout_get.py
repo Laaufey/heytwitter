@@ -1,5 +1,6 @@
 from bottle import get, redirect, request, response, view
 
+
 @get("/logout")
 def _():
     # remove session id and jwt

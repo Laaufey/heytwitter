@@ -8,9 +8,113 @@
       onclick="toggleTweetModal()"
     ></div>
     <div
-      class="relative z-10 bg-black rounded-lg w-1/3 h-64 mx-auto mt-20"
-    ></div>
+      class="relative z-10 p-4 bg-white  rounded-lg w-1/3 h-64 mx-auto mt-20"
+    >
+      <ion-icon name="close" size="large"></ion-icon>
+      <form
+        class="flex flex-col relative p-4rounded mt-4"
+        onsubmit="sendTweet(); return false"
+      >
+      <div class="flex">
+      <img
+      class="flex-none w-12 h-12 rounded-full"
+      src="/images/{{user['user_img']}}"
+      alt=""
+      />
+        <input
+          name="tweet"
+          class="w-full h-12 text-gray-800 rounded p-4 mb-12 outline-none placeholder:text-gray-800"
+          type="text"
+          placeholder="What is in your mind ?"
+        />
+      </div>
+      <div class="flex mt-8">
+        <input name="tweet_image" type="file"/>
+        <br>
+        <button
+          class="bottom-2 right-2 px-6 py-2 bg-blue2 text-white rounded-full"
+          type="submit"
+          onclick="toggleTweetModal()"
+        >
+          Tweet
+        </button>
+      </div>
+      </form>
+    
+  </div>
   </section>
+  <section id="editTweetModal" class="fixed w-screen h-screen z-10 hidden">
+    <div
+      class="absolute h-full w-full bg-black bg-opacity-50"
+      onclick="toggleEditModal()"
+    ></div>
+    <div class="relative z-10 p-4 bg-white  rounded-lg w-1/3 h-64 mx-auto mt-20">
+      <ion-icon name="close" size="large"></ion-icon>
+      <form
+        id="edit-tweet"
+        class="flex flex-col relative p-4rounded mt-4"
+        onsubmit="editTweet(); return false">
+        <div class="flex">
+          <img
+          class="flex-none w-12 h-12 rounded-full"
+          src="/images/{{user['user_img']}}"
+          alt=""
+          />
+          <input
+            name="edit_tweet"
+            class="w-full h-12 text-gray-800 rounded p-4 mb-12 outline-none placeholder:text-gray-800"
+            type="text"
+            placeholder="Your updated tweet"
+          />
+        </div>
+        <div class="flex mt-8">
+          <input name="tweet_image" type="file"/>
+          <br>
+          <button
+            class="bottom-2 right-2 px-6 py-2 bg-blue2 text-white rounded-full"
+            type="submit"
+            onclick="toggleEditModal()"
+          >
+            Edit
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+  <section id="logoutModal" class="fixed w-screen h-screen z-10 hidden">
+    <div
+      class="absolute h-full w-full "
+      onclick="toggleModal()"
+    ></div>
+    <div
+      class="relative z-10 bg-white rounded-2xl w-80 h-52 ml-32 mt-96  border border-gray-300"
+    >
+    <div class="relative flex items-center p-4 pr-4">
+      <img
+        src="/images/default.jpeg"
+        alt=""
+        class="w-10 rounded-full"
+      />
+      <div class="flex-1 pl-2">
+        
+        <p class="font-bold">
+          {{user["user_first_name"]}} {{user["user_last_name"]}}
+        </p>
+        
+        <p class="font-light text-gray-500 text-sm">
+          @{{user["user_name"]}}
+        </p>
+
+      </div>
+
+    </div>
+    <div class="grid p-4 pt-6 gap-4 border-t border-slate-200">
+      <a href="">Add an existing account</a>
+      <a href="/logout">Logout @{{user["user_name"]}}</a>
+    </div>
+  </div>
+  </section>
+
 
   % # main page
   <div class="flex w-4/5 mx-auto">
@@ -26,10 +130,11 @@
             <div class="mt-6">
               <a
                 class="text-xl hover:bg-lighter rounded-full py-3 px-6"
-                href=""
+                href="/{{tab['href']}}"
               >
                 <i class="{{tab['icon']}}"></i>
-                <span class="ml-2">{{tab['title']}}</span>
+                <div class="hidden lg:block">
+                <span class=" ml-2">{{tab['title']}}</span></div>
               </a>
             </div>
             % end
@@ -41,19 +146,26 @@
             Tweet
           </button>
         </div>
-        <div class="mt-auto">
-          <div class="flex items-center p-1">
+        <div class="mt-auto cursor-pointer" onclick="toggleModal()">
+          <div class="relative flex items-center p-2 pr-4 hover:bg-slate-200 rounded-full">
             <img
               src="/images/default.jpeg"
               alt=""
-              class="w-12 rounded-full"
+              class="w-10 rounded-full"
             />
             <div class="flex-1 pl-2">
-              <p class="font-bold">
+              
+              <p class="font-bold lg:hidden">
                 {{user["user_first_name"]}} {{user["user_last_name"]}}
-                {{user["user_name"]}}
-                <a href="/logout">Logout</a>
               </p>
+              
+                <ion-icon name="ellipsis-horizontal" class="absolute right-3 top-6"></ion-icon>
+              
+              <p class="font-light text-gray-500 text-sm">
+                @{{user["user_name"]}}
+              </p>
+              <!-- <a href="/logout">Logout</a> -->
+
             </div>
           </div>
         </div>
@@ -62,80 +174,112 @@
     % # end left % # center
     <div class="w-2/4 min-h-screen border-x border-gray-300">
       <div class="p-4">
-        <form name="search" class="relative" onsubmit="returnFalse()">
-          <i class="fas fa-search absolute top-4 left-4"></i>
-          <input
-            class="w-full h-12 px-4 rounded-full placeholder:text-gray-700 bg-gray-100 pl-12 outline-none"
-            type="text"
-            placeholder="What are you interested in ?"
-          />
-        </form>
+        <h1 class="font-bold text-2xl">Home</h1>
       </div>
-
-      <div class="px-4">
+      <div class="px-4 border-b border-gray-300">
         <form
-          action="/home"
-          method="POST"
-          name="tweet"
-          class="flex relative p-4 border border-blue1 rounded"
-          onsubmit="returnFalse()"
-
-        >
-          <input
-            class="w-full h-12 text-gray-800 rounded outline-none placeholder:text-gray-800"
-            type="text"
-            placeholder="What is in your mind ?"
-          />
-          <button
-            class="absolute bottom-2 right-2 px-8 py-2 bg-blue2 text-white rounded-full"
-          >
-            Tweet
-          </button>
-        </form>
-      </div>
-
-      <div class="voices mt-4">
-        % for tweet in tweets:
-        <div class="p-4 border-t border-slate-200">
+        class="flex flex-col relative p-4rounded mt-4"
+          onsubmit="sendTweet(); return false">
           <div class="flex">
             <img
-              class="flex-none w-12 h-12 rounded-full"
-              src="/images/{{tweet['src']}}"
-              alt=""
+            class="flex-none w-12 h-12 rounded-full"
+            src="/images/{{user['user_img']}}"
+            alt=""
             />
-            <div class="w-full pl-4">
-              <p class="font-bold">@{{tweet["user_name"]}}</p>
-              <p class="font-thin">
-                {{tweet["user_first_name"]}} {{tweet["user_last_name"]}}
-              </p>
-              <div class="pt-2">{{tweet["text"]}}</div>
-              % if 'image' in tweet:
-              <img
-                class="mt-2 w-full object-cover h-80"
-                src="/images/{{tweet['image']}}"
+              <input
+                name="tweet"
+                class="w-full h-12 text-gray-800 rounded p-4 outline-none placeholder:text-gray-800"
+                type="text"
+                placeholder="What is in your mind ?"
               />
-              % end
-              <div class="flex gap-12 w-full mt-4 text-lg">
-                <i class="fa-solid fa-message ml-auto"></i>
-                <i class="fa-solid fa-heart"></i>
-                <i class="fa-solid fa-retweet"></i>
-                <i class="fa-solid fa-share-nodes"></i>
+            </div>
+            <div class="flex mt-8">
+              
+              <div class="flex relative gap-8 pb-2 px-16">
+                <label for="tweet_image">
+                  <ion-icon class="text-xl hover:text-blue1 cursor-pointer" name="image-outline"></ion-icon>
+                  <input id="tweet_image" name="tweet_image" class="hidden" type="file"/>
+                </label>
+                <ion-icon class="text-xl hover:text-blue1 cursor-pointer" name="happy-outline"></ion-icon>
+                <ion-icon class="text-xl hover:text-blue1 cursor-pointer" name="calendar-number-outline"></ion-icon>
+                <ion-icon class="text-xl hover:text-blue1 cursor-pointer" name="bar-chart-outline"></ion-icon>
+                <ion-icon class="text-xl hover:text-blue1 cursor-pointer" name="location-outline"></ion-icon>
+              </div>
+              <button
+                class="bottom-2 absolute right-2 px-6 py-2 bg-blue2 text-white rounded-full"
+                type="submit"
+              >
+                Tweet
+              </button>
+            </div>
+        </form>
+      </div>
+
+      <div data-hook="tweets" id="tweets" class="voices mt-4">
+        % if not tweets:
+        <div class="grid p-4 justify-items-center">
+        <h1 class="font-bold">There are no tweets yet!</h1>
+        <h1>Be the first one..</h1>
+        <img class="h-80 pt-4" src="/images/dare.png" alt=""></div>
+        % end
+        % for tweet in tweets:
+          <form id="{{tweet['tweet_id']}}" class="p-4 border-b border-slate-200">
+            <div class="flex">
+              <img
+                class="flex-none w-12 h-12 rounded-full"
+                src="/images/{{tweet['user_img']}}"
+                alt=""
+              />
+              <div class="w-full relative pl-4">
+              <ion-icon name="ellipsis-horizontal" class="absolute right-2 top-2 hover:bg-blue2/20 hover:text-blue1 cursor-pointer transition ease-in-out duration-300 p-2 rounded-full"></ion-icon>
+                <p class="font-thin text-xs"><a class="font-bold text-lg" href="/{{tweet['user_name']}}">{{tweet["user_first_name"]}} {{tweet["user_last_name"]}}</a> @{{tweet["user_name"]}}</p>
+
+                <div class="showDelete">
+                  <!-- <button class="text-sm text-gray-100" onclick="deleteTweet(`{{tweet['tweet_id']}}`)">Delete</button> -->
+                  <button class="text-sm text-gray-200" id="edit" class="edit">Edit</button>
+                  <!-- <button data-action="edit" onclick="editTweet(`{{tweet['tweet_id']}}`)">Edit</button> -->
+                </div>
+
+                <div id="text_{{tweet['tweet_id']}}" class="pt-2">{{tweet["tweet_text"]}}</div>
+                % if tweet["tweet_image"]:
+                  <img
+                    class="mt-2 w-full object-cover h-80"
+                    src="/images/{{tweet['tweet_image']}}"
+                  />
+                % end
+                <div class="flex gap-12 w-full mt-4 text-lg">
+                  <ion-icon class="ml-auto hover:text-blue1 cursor-pointer" name="trash-outline" onclick="deleteTweet(`{{tweet['tweet_id']}}`)"></ion-icon>
+                  <ion-icon class="hover:text-blue1 cursor-pointer" name="chatbox-ellipses-outline"></ion-icon>
+                  <ion-icon class="hover:text-blue1 cursor-pointer" name="heart-outline"></ion-icon>
+                  <ion-icon class="hover:text-blue1 cursor-pointer" name="sync-outline"></ion-icon>                  
+                  <ion-icon class="hover:text-blue1 cursor-pointer" name="share-outline"></ion-icon>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </form>
         % end
       </div>
     </div>
     % # end center % # right
     <div class="w-1/4 h-screen">
       <div class="w-1/5 fixed flex flex-col h-screen gap-4 py-4 pl-4">
-        <div class="h-1/2 flex-grow bg-gray-300 rounded overflow-hidden">
+        <div class="">
+          <form name="search" class="relative" onsubmit="returnFalse()">
+            <i class="fas fa-search absolute top-4 left-4"></i>
+            <input
+              class="w-full flex-grow h-12 rounded-full placeholder:text-gray-700 bg-gray-100 pl-12 outline-none"
+              type="text"
+              placeholder="Search Glitter"
+            />
+          </form>
+        </div>
+        <div class="h-1/2 flex-grow bg-gray-100 rounded-2xl overflow-hidden">
+          <h1 class="font-bold text-xl p-4">Trends for you</h1>
           % for trend in trends:
           <div
-            class="p-1 hover:bg-gray-400 cursor-pointer flex justify-between"
+            class="p-1 hover:bg-gray-300 cursor-pointer flex justify-between"
           >
-            <div class="">
+            <div class="px-4">
               <p class="font-thin">{{trend["category"]}}</p>
               <p class="font-bold">{{trend["title"]}}</p>
               <p class="font-thin">{{trend["tweets_counter"]}}</p>
@@ -148,9 +292,10 @@
           </div>
           % end
         </div>
-        <div class="p-1 h-1/2 bg-gray-300 rounded overflow-hidden">
+        <div class="h-1/2 bg-gray-100 rounded-2xl overflow-hidden">
+          <h1 class="font-bold text-xl p-4">Who to follow</h1>
           % for follow in whoToFollow:
-          <div class="flex items-center p-1">
+          <div class="flex items-center p-2">
             <img
               src="/images/{{follow['img']}}.jpeg"
               alt=""

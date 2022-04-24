@@ -4,49 +4,58 @@ import re
 import uuid
 import mariadb
 import jwt
+from g import REGEX_PASSWORD, REGEX_EMAIL
+
 
 @post("/login")
-
 def _():
-  #VALIDATION
-  if not request.forms.get("user_email"):
-    return redirect("/login?error=user_email")
-  if not re.match(g.REGEX_EMAIL, request.forms.get("user_email")):
-    return redirect("/login?error=user_email")
 
-  user_email = request.forms.get("user_email")
-  user_password = request.forms.get("user_password")
+    # VALIDATION
+    # Email
+    if not request.forms.get("user_email"):
+        response.status = 400
+        return {"info": "Missing email"}
 
-  conn = mariadb.connect(**g.DB_CONFIG)
-  db = conn.cursor(dictionary=True)
+    user_email = request.forms.get("user_email")
 
-  db.execute("""
-  SELECT * FROM users WHERE user_email = %s AND user_password = %s
-  """,(user_email, user_password))
+    if not re.match(REGEX_EMAIL, request.forms.get("user_email")):
+        response.status = 400
+        return {"info": "Email is not valid"}
 
-  account = db.fetchone()
+    # Password
+    if not request.forms.get("user_password"):
+        response.status = 400
+        return {"info": "Missing password"}
 
-  print("Account "*5)
-  print(account)
-  
-  #VALIDATE PASSWORD
-  if not request.forms.get("user_password"):
-    return redirect(f"/login?error=user_password&user_email={user_email}")
-  
-  if account is not None:
-    # create a JWT to set as cookie
-    token = jwt.encode(
-      payload = account,
-      key = "super_secret"
-    )
+    user_password = request.forms.get("user_password")
 
-    response.set_cookie("token", token)
-    # is_xhr = True if request.headers.get('spa') else False
-    redirect ("/home")
-    return "Logged in"
-    # return dict(title="Login", url="/login", is_xhr=is_xhr)
-  else:
+    # if not re.match(REGEX_PASSWORD, user_password):
+    #     response.status = 400
+    #     return {"info": "Invalid password"}
 
+    conn = mariadb.connect(**g.DB_CONFIG)
+    db = conn.cursor(dictionary=True)
 
-    #WRONG PASSWORD
-    return redirect(f"/login?error=user_password&user_email={user_email}")
+    db.execute("""
+    SELECT * FROM users WHERE user_email = %s AND user_password = %s
+    """, (user_email, user_password))
+
+    account = db.fetchone()
+
+    print("Account "*5)
+    print(account)
+
+    if account:
+        # create a JWT to set as cookie
+        token = jwt.encode(
+            payload=account, key="super_secret", algorithm="HS256")
+
+        response.set_cookie("token", token)
+        # is_xhr = True if request.headers.get('spa') else False
+        redirect("/home")
+        return "Logged in"
+        # return dict(title="Login", url="/login", is_xhr=is_xhr)
+    else:
+
+        # WRONG PASSWORD
+        return redirect(f"/login?error=user_password&user_email={user_email}")

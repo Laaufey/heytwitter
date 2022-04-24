@@ -1,0 +1,21 @@
+{
+  "name": "tailwindcss",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "watch": "tailwindcss -i tailwindcss.css -o ../app.css --watch",
+    "dev": "npx tailwindcss -i tailwindcss.css -o ../css/app.css --watch",
+    "build": "npx tailwindcss -i tailwindcss.css -o ../final.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Laaufey/heytwitter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Laaufey/heytwitter/issues"
+  },
+  "homepage": "https://github.com/Laaufey/heytwitter#readme"
+}
