@@ -1,7 +1,6 @@
 import imp
 from bottle import get, request, view
 import g
-import mariadb
 
 
 @get("/login")

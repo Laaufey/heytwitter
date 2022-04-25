@@ -1,9 +1,7 @@
-from bottle import default_app, get, post, run, static_file, view, request
+from bottle import default_app, get, run, static_file, view, request
 import g
-from g import tabs, people, trends, tweets, whoToFollow
+from g import tabs, trends, tweets, whoToFollow
 from password import gmail_password
-
-import mariadb
 import smtplib
 import ssl
 from email.mime.text import MIMEText
@@ -23,6 +21,7 @@ import signup_post     # POST
 import login_post      # POST
 import tweet_post      # POST
 import tweet_delete    # POST
+import tweet_put
 
 ##############################
 
@@ -44,8 +43,9 @@ def _():
 @get("/")
 @view("index")
 def _():
+    error = request.params.get("error")
     is_xhr = True if request.headers.get('spa') else False
-    return dict(title="Index", tabs=tabs, tweets=tweets, trends=trends, whoToFollow=whoToFollow, users=g.USERS, is_xhr=is_xhr)
+    return dict(title="Index", error=error, tabs=tabs, tweets=tweets, trends=trends, whoToFollow=whoToFollow, users=g.USERS, is_xhr=is_xhr)
 
 ##############################
 
@@ -89,7 +89,7 @@ def _():
     <html>
     <body>
         <p>
-        Hi,<br>
+        Welcome to Glitter!<br>
         <b>How are you?</b><br>
         </p>
     </body>

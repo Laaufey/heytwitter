@@ -1,7 +1,8 @@
 import re
 from bottle import get, view, response, request, redirect
 import g
-import mariadb
+
+import mysql.connector
 import jwt
 
 
@@ -12,7 +13,7 @@ def _():
     if not user_session:
         return redirect("/")
     try:
-        conn = mariadb.connect(**g.DB_CONFIG)
+        conn = mysql.connector.connect(**g.DB_CONFIG)
         db = conn.cursor(dictionary=True)
 
         is_xhr = True if request.headers.get('spa') else False
@@ -24,13 +25,18 @@ def _():
         decoded_session = jwt.decode(
             user_session, "super_secret", algorithms="HS256")
 
-        db.execute("SELECT * FROM tweets ORDER BY tweet_date DESC")
+        user_query = f"""
+        SELECT * FROM users
+        """
+        db.execute(user_query)
+        users = db.fetchall()
 
+        db.execute("SELECT * FROM tweets ORDER BY tweet_date DESC")
         tweets = db.fetchall()
 
         conn.commit()
         conn.close()
-        return dict(title="Admin", is_xhr=is_xhr, tweets=tweets, tabs=g.tabs, trends=g.trends, whoToFollow=g.whoToFollow, user=decoded_session, users=g.USERS)
+        return dict(title="Admin", is_xhr=is_xhr, tweets=tweets, users=users, tabs=g.tabs, trends=g.trends, whoToFollow=g.whoToFollow, user=decoded_session)
     except Exception as ex:
         print(ex)
         response.status = 500

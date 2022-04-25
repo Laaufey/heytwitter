@@ -1,40 +1,35 @@
 from bottle import post, redirect, request, response
 import g
 import jwt
-import mariadb
+
 import re
+import mysql.connector
 from g import (USER_FIRST_NAME_MAX_LENGTH, USER_FIRST_NAME_MIN_LENGTH, USER_LAST_NAME_MAX_LENGTH, USER_LAST_NAME_MIN_LENGTH,
                USER_NAME_MAX_LENGTH, USER_NAME_MIN_LENGTH, USER_PASSWORD_MIN_LENGTH, REGEX_EMAIL, REGEX_PASSWORD, REGEX_USERNAME, REGEX_UUID4)
 
 
 @post("/signup")
 def _():
-    conn = mariadb.connect(**g.DB_CONFIG)
+    conn = mysql.connector.connect(**g.DB_CONFIG)
     db = conn.cursor(dictionary=True)
     response.set_header(
         "Cache-Control", "no-cache, no-store, must-revalidate")
     # VALIDATION
+    user_email = request.forms.get("user_email")
     ##############################
     # username
     if not request.forms.get("user_name"):
         response.status = 400
-        return {"info": "Username is missing"}
+        return redirect(f"/?error=user_name&user_email={user_email}")
 
     user_name = request.forms.get("user_name")
 
-    if len(user_name) < USER_NAME_MIN_LENGTH:
+    if len(user_name) < USER_NAME_MIN_LENGTH or len(user_name) > USER_NAME_MAX_LENGTH:
         response.status = 400
-        return {"info": f"Username must be at least {USER_NAME_MIN_LENGTH} characters long"}
-
-    if len(user_name) > USER_NAME_MAX_LENGTH:
-        response.status = 400
-        return {"info": f"Username can only have a maximum of {USER_NAME_MAX_LENGTH} characters"}
-
+        return redirect(f"/?error=user_name&user_email={user_email}")
     if not re.match(REGEX_USERNAME, user_name):
         response.status = 400
-        return {
-            "info": "Username can only have letters from a-z (Uppercase and lowercase), numbers 0-9, underscores and hyphens"
-        }
+        return redirect(f"/?error=user_name&user_email={user_email}")
 
     query_username = f"""
             SELECT *
@@ -46,48 +41,46 @@ def _():
 
     if is_username_taken:
         response.status = 400
-        return {"info": "Username is taken, try another one"}
+        return redirect(f"/?error=user_name&user_email={user_email}")
 
     ##############################
     # Full name validate
 
     if not request.forms.get("user_first_name"):
         response.status = 400
-        return {"info": "First name is missing"}
+        return redirect(f"/?error=user_first_name&user_email={user_email}")
 
     user_first_name = request.forms.get("user_first_name")
 
     if len(user_first_name) < USER_FIRST_NAME_MIN_LENGTH:
         response.status = 400
-        return {"info": f"Name must be at least {USER_FIRST_NAME_MIN_LENGTH} characters long"}
+        return redirect(f"/?error=user_first_name&user_email={user_email}")
     if len(user_first_name) > USER_FIRST_NAME_MAX_LENGTH:
         response.status = 400
-        return {"info": f"Name can only have a maximum of {USER_FIRST_NAME_MAX_LENGTH} characters"}
+        return redirect(f"/?error=user_first_name&user_email={user_email}")
 
     if not request.forms.get("user_last_name"):
         response.status = 400
-        return {"info": "Last name is missing"}
+        return redirect(f"/?error=user_last_name&user_email={user_email}")
 
     user_last_name = request.forms.get("user_last_name")
 
     if len(user_last_name) < USER_LAST_NAME_MIN_LENGTH:
         response.status = 400
-        return {"info": f"Name must be at least {USER_LAST_NAME_MIN_LENGTH} characters long"}
+        return redirect(f"/?error=user_last_name&user_email={user_email}")
     if len(user_last_name) > USER_LAST_NAME_MAX_LENGTH:
         response.status = 400
-        return {"info": f"Name can only have a maximum of {USER_LAST_NAME_MAX_LENGTH} characters"}
+        return redirect(f"/?error=user_last_name&user_email={user_email}")
 
     ##############################
     # Email validation
     if not request.forms.get("user_email"):
         response.status = 400
-        return {"info": "Email is missing"}
-
-    user_email = request.forms.get("user_email")
+        return redirect(f"/?error=user_email")
 
     if not re.match(REGEX_EMAIL, user_email):
         response.statis = 400
-        return {"info": "Email is not invalid"}
+        return redirect(f"/?error=user_email")
 
     query_email = f"""
         SELECT *
@@ -107,19 +100,18 @@ def _():
 
     if not request.forms.get("user_password"):
         response.status = 400
-        return {"info": "Password is missing"}
+        return redirect(f"/?error=user_password&user_email={user_email}")
 
     user_password = request.forms.get("user_password")
 
     if len(user_password) < USER_PASSWORD_MIN_LENGTH:
         response.status = 400
-        return {"info": f"Password must be at least {USER_PASSWORD_MIN_LENGTH} characters long"}
+        return redirect(f"/?error=user_password&user_email={user_email}")
 
     if not re.match(REGEX_PASSWORD, user_password):
         response.status = 400
-        return {
-            "info": "Password must be at least 8 characters long, have 1 uppercase letter, 1 lowercase letter and 1 number or 1 symbol"
-        }
+        return redirect(f"/?error=user_password&user_email={user_email}")
+
     # Default picture for everybory
     user_img = "../images/default.jpeg"
 

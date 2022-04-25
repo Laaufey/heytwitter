@@ -2,7 +2,8 @@ from bottle import post, redirect, request, response
 import g
 import re
 import uuid
-import mariadb
+
+import mysql.connector
 import jwt
 from g import REGEX_PASSWORD, REGEX_EMAIL
 
@@ -14,13 +15,14 @@ def _():
     # Email
     if not request.forms.get("user_email"):
         response.status = 400
-        return {"info": "Missing email"}
+        return redirect(f"/?error=user_email")
 
     user_email = request.forms.get("user_email")
 
     if not re.match(REGEX_EMAIL, request.forms.get("user_email")):
         response.status = 400
-        return {"info": "Email is not valid"}
+        # return {"info": "Email is not valid"}
+        return redirect(f"/?error=user_email")
 
     # Password
     if not request.forms.get("user_password"):
@@ -33,7 +35,7 @@ def _():
     #     response.status = 400
     #     return {"info": "Invalid password"}
 
-    conn = mariadb.connect(**g.DB_CONFIG)
+    conn = mysql.connector.connect(**g.DB_CONFIG)
     db = conn.cursor(dictionary=True)
 
     db.execute("""

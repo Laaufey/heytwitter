@@ -4,49 +4,156 @@
 
 <main   
   data-spa="yes"
-  data-spa_url="{{url}}"
+  data-spa_url="/admin"
   data-spa_title="{{title}}"
   data-spa_hide="[data-spa]"
   data-spa_display="block"
 >
-  <h1>Admin panel</h1>
-  <div class="grid grid-cols-2 p-10">
-    
-  <div class="grid">
-    <h1 class="font-bold text-2xl">All tweets</h1>
-    % for tweet in tweets:
-    <div id="{{tweet['tweet_id']}}" class="p-4 flex flex-col bg-gray-100 rounded-2xl">
-      <div class="flex">
-        <img
-          class="flex-none w-12 h-12 rounded-full"
-          src="/images/{{user['user_img']}}"
-          alt=""
-        />
-        <div class="w-full relative pl-4">
-          <p class="font-bold"><a href="/{{tweet['user_name']}}">@{{tweet["user_name"]}}</a></p>
-          <p class="font-thin">
-            {{tweet["user_first_name"]}} {{tweet["user_last_name"]}}
-          </p>
-          <button onclick="deleteTweet(`{{tweet['tweet_id']}}`)">Delete</button>
-          <div id="text_{{tweet['tweet_id']}}" class="pt-2">{{tweet["tweet_text"]}}</div>
-          <!-- % if 'tweet_image' in tweet:
+  
+
+  % # main page
+  <div class="flex w-4/5 mx-auto">
+    % # left
+    <div class="w-1/4">
+      <div class="fixed h-screen w-1/5 px-8 flex flex-col py-6">
+        <div class="">
+          <div class="pl-5">
+            <i class="fa-brands fa-twitter fa-fw text-4xl text-blue1"></i>
+          </div>
+          <div class="">
+            
+          </div>
+
+        </div>
+        <div class="mt-auto" onclick="toggleModal()">
+          <div class="relative flex items-center p-2 pr-4 hover:bg-slate-200 rounded-full">
             <img
-              class="mt-2 w-full object-cover h-80"
-              src="/images/{{tweet['tweet_image']}}"
+              src="/images/default.jpeg"
+              alt=""
+              class="w-10 rounded-full"
             />
-          # % end -->
+            <div class="flex-1 pl-2">
+              
+              <p class="font-bold">
+                {{user["user_first_name"]}} {{user["user_last_name"]}}
+              </p>
+              
+                <ion-icon name="ellipsis-horizontal" class="absolute right-3 top-6"></ion-icon>
+              
+              <p class="font-light text-gray-500 text-sm">
+                @{{user["user_name"]}}
+              </p>
+              <a href="/logout">Logout</a>
+            </div>
           </div>
         </div>
       </div>
-      % end
     </div>
-    <div class="grid">
-      <h1 class="font-bold text-2xl">Deleted tweets</h1>
-    </div>
+    % # end left % # center
+    <div class="w-2/4 min-h-screen border-x border-gray-300">
+      <div class="relative px-14 py-2">
+        <ion-icon name="arrow-back-outline" class="absolute top-4 left-4"></ion-icon>
+        <h1 class="font-bold text-2xl">Admin Page</h1>
+      </div>
+      <div class="relative">
+        <img src="/images/default.jpeg" class="absolute rounded-full w-32 h-32 border-4 border-white top-40 left-6" alt="">
+        <img
+          class="object-cover w-full max-h-60 mb-12"
+          src="/images/default.jpeg"
+          alt=""
+            />
+        <div class="pl-4">
+          <!-- <h1 class="font-bold text-2xl">{{user["user_first_name"]}} {{user["user_last_name"]}}</h1> -->
+          <!-- <h1 class="font-light text-sm text-gray-500">@{{user["user_name"]}}</h1> -->
 
-</div>
-</div>
+
+        </div>
+      </div>
+      <nav class="grid grid-cols-4 justify-items-stretch mt-4">
+        <a href="" class="text-sm font-normal py-2 hover:bg-gray-300 text-gray-700 text-center">All Tweets</a>
+        <a href="" class="text-sm font-normal py-2 hover:bg-gray-300 text-gray-700 text-center">Reported tweets</a>
+        <a href="" class="text-sm font-normal py-2 hover:bg-gray-300 text-gray-700 text-center">Reported images</a>
+        <a href="" class="text-sm font-normal py-2 hover:bg-gray-300 text-gray-700 text-center">Reported users</a>
+      </nav>
+      <div data-hook="tweets" id="tweets" class="voices mt-4">
+        % for tweet in tweets:
+        <div id="{{tweet['tweet_id']}}" class="p-4 border-b border-slate-200">
+          <div class="flex">
+            <img
+              class="flex-none w-12 h-12 rounded-full"
+              src="/images/{{tweet['user_img']}}"
+              alt=""
+            />
+            <div class="w-full relative pl-4">
+            <ion-icon name="ellipsis-horizontal" class="absolute right-2 top-2 hover:bg-blue2/20 hover:text-blue1 cursor-pointer transition ease-in-out duration-300 p-2 rounded-full"></ion-icon>
+              <p class="font-thin text-xs"><a class="font-bold text-lg" href="/{{tweet['user_name']}}">{{tweet["user_first_name"]}} {{tweet["user_last_name"]}}</a> @{{tweet["user_name"]}}</p>
+
+              <div class="showDelete">
+                <!-- <button class="text-sm text-gray-100" onclick="deleteTweet(`{{tweet['tweet_id']}}`)">Delete</button> -->
+                <button class="text-sm text-gray-200" data-id="{{tweet['tweet_id']}}" onclick="openEditModal('#tweet_update_modal'); updateModalContent();">Edit</button>
+                <!-- <button data-action="edit" onclick="editTweet(`{{tweet['tweet_id']}}`)">Edit</button> -->
+              </div>
+              <!-- <button onclick="toggleEditModal()">Edit</button> -->
+
+              <div data-text class="pt-2">{{tweet["tweet_text"]}}</div>
+              % if tweet["tweet_image"]:
+                <img
+                  class="mt-2 w-full object-cover h-80"
+                  src="/images/{{tweet['tweet_image']}}"
+                />
+              % end
+              <div class="flex gap-12 w-full mt-4 text-lg">
+                <ion-icon class="ml-auto hover:text-blue1 cursor-pointer" name="trash-outline" onclick="deleteTweet(`{{tweet['tweet_id']}}`)"></ion-icon>
+                <ion-icon class="hover:text-blue1 cursor-pointer" name="chatbox-ellipses-outline"></ion-icon>
+                <ion-icon class="hover:text-blue1 cursor-pointer" name="heart-outline"></ion-icon>
+                <ion-icon class="hover:text-blue1 cursor-pointer" name="sync-outline"></ion-icon>                  
+                <ion-icon class="hover:text-blue1 cursor-pointer" name="share-outline"></ion-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      % end
+      </div>
+    </div>
+    % # end center % # right
+      <div class="w-1/4 h-screen">
+        <div class="h-screen gap-4 py-4 pl-4">
+          <h1 class="font-bold text-xl p-4">All users</h1>
+          % for user in users:
+          
+            <div class="relative flex items-center cursor-pointer p-2 pr-4 hover:bg-slate-200 rounded-full">
+              <img
+                src="/images/default.jpeg"
+                alt=""
+                class="w-10 rounded-full"
+              />
+              <div class="flex-1 pl-2">
+                
+                <p class="font-bold">
+                  {{user["user_first_name"]}} {{user["user_last_name"]}}
+                </p>
+                
+                  <ion-icon name="ellipsis-horizontal" class="absolute right-3 top-6"></ion-icon>
+                
+                <p class="font-light text-gray-500 text-sm">
+                  @{{user["user_name"]}}
+                </p>
+              </div>
+            </div>
+          
+          % end
+        </div>
+      </div>
+    % # end right
   </div>
+  % # end page
+
+
+% include("footer") 
+
+
+
+
 </main>
 
 

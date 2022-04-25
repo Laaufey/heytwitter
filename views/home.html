@@ -1,7 +1,13 @@
 % if not is_xhr: 
   % include("header") 
 % end
-
+<main
+  data-spa="yes"
+  data-spa_url="/home"
+  data-spa_title="Home / Glitter"
+  data-spa_hide="[data-spa]"
+  data-spa_display="block"
+>
   <section id="tweetModal" class="fixed w-screen h-screen z-10 hidden">
     <div
       class="absolute h-full w-full bg-black bg-opacity-50"
@@ -43,41 +49,46 @@
     
   </div>
   </section>
-  <section id="editTweetModal" class="fixed w-screen h-screen z-10 hidden">
+  <section id="update_tweet_modal" class="fixed w-screen h-screen z-10 hidden" data-modal="edit_tweet">
     <div
       class="absolute h-full w-full bg-black bg-opacity-50"
-      onclick="toggleEditModal()"
+      onclick="openEditModal('#tweet_update_modal')"
     ></div>
     <div class="relative z-10 p-4 bg-white  rounded-lg w-1/3 h-64 mx-auto mt-20">
       <ion-icon name="close" size="large"></ion-icon>
       <form
+        action="/tweets" action="put"
         id="edit-tweet"
-        class="flex flex-col relative p-4rounded mt-4"
-        onsubmit="editTweet(); return false">
-        <div class="flex">
-          <img
+        class="flex flex-col relative p-4 rounded mt-4"
+        onsubmit="updateTweet(); return false"
+        data-form="edit_tweet">
+        <!-- <div class="flex"> -->
+          <!-- <img
           class="flex-none w-12 h-12 rounded-full"
           src="/images/{{user['user_img']}}"
           alt=""
-          />
+          /> -->
+          <label for="tweet_text" class="w-full font-medium text-gray-500 py-2">Edit Tweet</label>
           <input
-            name="edit_tweet"
+            name="tweet_text"
+            id="tweet_text_update"
             class="w-full h-12 text-gray-800 rounded p-4 mb-12 outline-none placeholder:text-gray-800"
             type="text"
-            placeholder="Your updated tweet"
+            placeholder=""
+            data-validate="str" data-min="1" data-max="140"
           />
-        </div>
-        <div class="flex mt-8">
+        <!-- </div> -->
+        <!-- <div class="flex mt-8">
           <input name="tweet_image" type="file"/>
-          <br>
+          <br> -->
           <button
-            class="bottom-2 right-2 px-6 py-2 bg-blue2 text-white rounded-full"
-            type="submit"
-            onclick="toggleEditModal()"
+            class="absolute bottom-6 right-6 px-8 py-2 bg-blue2 text-white rounded-full"
+            type="submit" data-default="Tweet" data-await="Tweeting..."
+            onclick="openEditModal()"
           >
-            Edit
+            Update
           </button>
-        </div>
+        <!-- </div> -->
       </form>
     </div>
   </section>
@@ -133,8 +144,7 @@
                 href="/{{tab['href']}}"
               >
                 <i class="{{tab['icon']}}"></i>
-                <div class="hidden lg:block">
-                <span class=" ml-2">{{tab['title']}}</span></div>
+                <span class=" ml-2">{{tab['title']}}</span>
               </a>
             </div>
             % end
@@ -149,7 +159,7 @@
         <div class="mt-auto cursor-pointer" onclick="toggleModal()">
           <div class="relative flex items-center p-2 pr-4 hover:bg-slate-200 rounded-full">
             <img
-              src="/images/default.jpeg"
+              src="/images/{{user['user_img']}}"
               alt=""
               class="w-10 rounded-full"
             />
@@ -223,7 +233,7 @@
         <img class="h-80 pt-4" src="/images/dare.png" alt=""></div>
         % end
         % for tweet in tweets:
-          <form id="{{tweet['tweet_id']}}" class="p-4 border-b border-slate-200">
+          <div id="{{tweet['tweet_id']}}" class="p-4 border-b border-slate-200">
             <div class="flex">
               <img
                 class="flex-none w-12 h-12 rounded-full"
@@ -236,11 +246,12 @@
 
                 <div class="showDelete">
                   <!-- <button class="text-sm text-gray-100" onclick="deleteTweet(`{{tweet['tweet_id']}}`)">Delete</button> -->
-                  <button class="text-sm text-gray-200" id="edit" class="edit">Edit</button>
+                  <button class="text-sm text-gray-200" data-id="{{tweet['tweet_id']}}" onclick="openEditModal('#tweet_update_modal'); updateModalContent();">Edit</button>
                   <!-- <button data-action="edit" onclick="editTweet(`{{tweet['tweet_id']}}`)">Edit</button> -->
                 </div>
+                <!-- <button onclick="toggleEditModal()">Edit</button> -->
 
-                <div id="text_{{tweet['tweet_id']}}" class="pt-2">{{tweet["tweet_text"]}}</div>
+                <div data-text class="pt-2">{{tweet["tweet_text"]}}</div>
                 % if tweet["tweet_image"]:
                   <img
                     class="mt-2 w-full object-cover h-80"
@@ -256,7 +267,7 @@
                 </div>
               </div>
             </div>
-          </form>
+          </div>
         % end
       </div>
     </div>
@@ -314,7 +325,7 @@
     % # end right
   </div>
   % # end page
-
+</main>
 % if not is_xhr: 
   % include("footer") 
 % end

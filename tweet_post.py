@@ -2,7 +2,8 @@ from bottle import post, response, redirect, request
 import g
 import imghdr
 import uuid
-import mariadb
+
+import mysql.connector
 import jwt
 import time
 import os
@@ -70,7 +71,7 @@ def _():
         ##############################
         # Connecting to the database
 
-        conn = mariadb.connect(**g.DB_CONFIG)
+        conn = mysql.connector.connect(**g.DB_CONFIG)
         db = conn.cursor(dictionary=True)
 
         user_session = request.get_cookie("token")

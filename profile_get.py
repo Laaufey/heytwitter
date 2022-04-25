@@ -1,14 +1,16 @@
+import imp
 from bottle import get, view, response, request, redirect
 import g
 import jwt
-import mariadb
+
+import mysql.connector
 
 
 @get("/<user_name>")
 @view("profile")
 def _(user_name, ):
     try:
-        conn = mariadb.connect(**g.DB_CONFIG)
+        conn = mysql.connector.connect(**g.DB_CONFIG)
         db = conn.cursor(dictionary=True)
 
         response.set_header(

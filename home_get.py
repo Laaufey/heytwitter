@@ -1,7 +1,8 @@
 from bottle import get, view, response, request, redirect
 import g
-import mariadb
+
 import jwt
+import mysql.connector
 
 
 @get("/home")
@@ -12,7 +13,7 @@ def _():
         return redirect("/")
 
     try:
-        conn = mariadb.connect(**g.DB_CONFIG)
+        conn = mysql.connector.connect(**g.DB_CONFIG)
         db = conn.cursor(dictionary=True)
 
         is_xhr = True if request.headers.get('spa') else False
@@ -28,8 +29,18 @@ def _():
 
         tweets = db.fetchall()
 
+        user_id = {"user_id": decoded_session["user_name"]}
+        query_users = f"""
+            SELECT * FROM users
+            WHERE user_id != %(user_id)s
+            AND user_name != "admin"
+            ORDER BY RAND() LIMIT 3
+            """
+        db.execute(query_users, user_id)
+        users = db.fetchall()
+
         conn.commit()
-        return dict(title="Home", is_xhr=is_xhr, tweets=tweets, tabs=g.tabs, trends=g.trends, whoToFollow=g.whoToFollow, user=decoded_session, users=g.USERS)
+        return dict(title="Home", is_xhr=is_xhr, tweets=tweets, tabs=g.tabs, trends=g.trends, whoToFollow=g.whoToFollow, user=decoded_session, users=users)
     except Exception as ex:
         print(ex)
         response.status = 500

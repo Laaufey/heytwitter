@@ -17,15 +17,22 @@
     <form class="text-black mt-8 mb-8" action="/login" method="POST">
       <h2 class="text-black font-bold text-2xl">Sign in to Glitter</h2>
       <div class="flex flex-col mt-2">
+        % if error == "user_email":
+        <h1>Please enter a valid email</h1>
+        % end 
         <label for="">User email:</label>
         <input
           class="sign_up_email rounded-lg p-2 border border-gray-300"
           name="user_email"
           type="text"
           placeholder="email"
+          data-validate="email"
         />
       </div>
       <div class="flex flex-col mt-2">
+        % if error == "user_password":
+        <h1>Wrong password entered</h1>
+        % end 
         <label for="">Password: (min 6 - max 50 characters)</label>
         <input
           class="sign_up_email rounded-lg p-2 border border-gray-300"

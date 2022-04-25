@@ -12,6 +12,23 @@ function returnFalse(){
 // (actually it's a part of submit) id you have mentioned in action
 };
 
+// const queryString = window.location.search
+// if (queryString) {
+//     const urlParams = new URLSearchParams(queryString)
+//     if (urlParams.get("error")){
+//         document.querySelector("#signUpModal").classList.toggle("hidden")
+//     }
+// }
+function toggleSignUpModal(){
+
+    // _one("#signUpModal").classList.toggle("hidden")
+    const signupmodal = document.getElementById("signUpModal").classList.toggle("hidden");
+  }
+
+function toggleSignInModal(){
+  const loginmodal = document.getElementById("loginModal").classList.toggle("hidden");
+}
+
 function showTweetModal(){
   // alert();
   const modal = document.getElementById("tweetModal").classList.remove("hidden");
@@ -32,14 +49,26 @@ function toggleTweetModal(){
 function toggleModal(){
   // alert();
   const modallogout = document.getElementById("logoutModal").classList.toggle("hidden");
-
+  
 };
 
-function toggleEditModal(){
+function toggleEditModal(modal){
   // alert();
-  const modallogout = document.getElementById("editTweetModal").classList.toggle("hidden");
-
-};
+  // const modalupdate = document.getElementById("update_tweet_modal").classList.toggle("hidden");
+  _one(modal).classList.toggle("hidden")
+}
+function openEditModal(){
+  // alert();
+  const modalupdate = document.getElementById("update_tweet_modal").classList.toggle("hidden");
+  // _one(modal).classList.toggle("hidden")
+}
+function updateModalContent(){
+  tweetId = event.target.dataset.id
+  console.log(event)
+  const modal = document.getElementById("update_tweet_modal")
+  modal.querySelector("form").dataset.id = tweetId
+  console.log(tweetId)
+}
 
 async function sendTweet(){
   const form = event.target
@@ -129,27 +158,22 @@ async function sendTweet(){
   
 }
 
-const btnEditTweet = document.getElementById("edit")
-btnEditTweet.addEventListener("click", editTweet);
-const editModal = document.getElementById("editTweetModal")
-console.log(editModal)
 
 
 
-
-async function editTweet(tweet_id){
-  event.preventDefault()
-  console.log({tweet_id})
-  const connection = await fetch(`/tweets/${tweet_id}`, {
-    
+async function updateTweet(){
+  const form = event.target
+  const id = form.dataset.id
+  const connection = await fetch(`/tweets/${id}`, {
     method: "PUT",
-    body: new FormData(document.getElementById("edit-tweet")),
+    body: new FormData(form)
   })
-  console.log(connection)
-  const response = await connection
-
-  if (!response.ok) return alert("Can't edit the tweet")
-  toggleEditModal()
+  if ( ! connection.ok ) {
+    alert("Can't edit the tweet")
+    return
+  }
+  const tweetText = await connection.text()
+  document.querySelector(`[id=${id}]`).querySelector("[data-text]").textContent = tweetText
 }
 
 async function deleteTweet(tweet_id){

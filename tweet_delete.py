@@ -1,6 +1,7 @@
 import g
 from bottle import post, delete, request, redirect, response
-import mariadb
+
+import mysql.connector
 import jwt
 
 
@@ -10,7 +11,7 @@ def _(tweet_id):
     decoded_session = jwt.decode(
         user_session, "super_secret", algorithms=["HS256"])
     print(decoded_session)
-    conn = mariadb.connect(**g.DB_CONFIG)
+    conn = mysql.connector.connect(**g.DB_CONFIG)
     db = conn.cursor(dictionary=True)
 
     # Validate
