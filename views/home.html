@@ -137,10 +137,10 @@
 
 
   % # main page
-  <div class="flex w-full md:w-4/5 mx-auto">
+  <div class="flex w-full xl:w-4/5 mx-auto">
     % # left
     <div class="w-1/12 md:w-1/6 lg:w-1/4">
-      <div class="fixed h-screen w-1/5 px-2 lg:px-8 flex flex-col py-6">
+      <div class="fixed h-screen pr-2 pl-2 sm:pl-8 md:pl-15 lg:px-8 flex flex-col py-6">
         <div class="">
           <div class="pl-5">
             <i class="fa-brands fa-twitter fa-fw text-4xl text-blue1"></i>
@@ -193,11 +193,11 @@
             <img
               src="/images/{{user['user_img']}}"
               alt=""
-              class="object-cover flex-none w-10 h-10 rounded-full"
+              class="object-cover flex-none w-12 h-12 lg:w-10 lg:h-10 rounded-full"
             />
             <div class="flex-1 pl-2 hidden lg:inline-block">
               
-              <p class="font-bold">
+              <p class="font-bold text-sm">
                 {{user["user_first_name"]}} {{user["user_last_name"]}}
               </p>
               
@@ -214,7 +214,7 @@
       </div>
     </div>
     % # end left % # center
-    <div class="w-8/12 md:w-4/5 lg:w-2/4 ml-10 md:ml-0 min-h-screen border-x border-gray-300">
+    <div class="w-4/5 lg:w-2/4 ml-10 md:ml-0 min-h-screen border-x border-gray-300">
       <div class="p-4">
         <h1 class="font-bold text-2xl">Home</h1>
       </div>
