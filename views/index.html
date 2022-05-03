@@ -15,7 +15,7 @@
   ></div>
   <div class="relative z-10 bg-white rounded-lg w-1/3 h-4/5 mx-auto mt-20 p-10">
     <i class="fa-brands fa-twitter fa-fw text-4xl text-blue1"></i>
-    <form class="text-black" action="/signup" method="POST" onsubmit="validate(); return False">
+    <form class="text-black" action="/signup" method="POST" onsubmit="validate(); return false">
       <h2 class="text-black font-bold text-lg">Create your account</h2>
       <div class="flex flex-col mt-2">
         % if error == "user_name":
@@ -28,7 +28,11 @@
           type="text"
           placeholder="Your new username"
           data-validate="str"
+          data-min="2"
+          data-max="30"
         />
+        <p id="password-wrong" class="text-red-600 text-xs hidden">Please enter a valid user name</p>
+
       </div>
       <div class="flex flex-col mt-2">
         % if error == "user_first_name":
@@ -41,7 +45,11 @@
           type="text"
           placeholder="first name"
           data-validate="str"
+          data-min="2"
+          data-max="20"
         />
+        <p id="password-wrong" class="text-red-600 text-xs hidden">Please enter a valid name</p>
+
       </div>
       <div class="flex flex-col mt-2">
         % if error == "user_last_name":
@@ -54,7 +62,11 @@
           type="text"
           placeholder="last name"
           data-validate="str"
+          data-min="2"
+          data-max="20"
         />
+        <p id="password-wrong" class="text-red-600 text-xs hidden">Please enter a valid name</p>
+
       </div>
       <div class="flex flex-col mt-2">
         % if error == "user_email":
@@ -68,11 +80,14 @@
           placeholder="email"
           data-validate="email"
         />
+        <p id="password-wrong" class="text-red-600 text-xs hidden">Please enter a valid email</p>
+
       </div>
       <div class="flex flex-col mt-2">
         % if error == "user_password":
-        <p>Please enter a valid password</p>
+        <p class="text-red-600">Please enter a valid password</p>
         % end
+
         <label for="">Password: (min 6 - max 50 characters)</label>
         <input
           class="sign_up_email rounded-lg p-2 border border-gray-300"
@@ -80,7 +95,11 @@
           type="password"
           placeholder="password"
           data-validate="str"
+          data-min="6"
+          data-max="50"
+          validate_error="Please enter a valid password"
         />
+        <p id="password-wrong" class="text-red-600 text-xs hidden">Please enter a valid password</p>
       </div>
       <button class="tweetBtn bg-blue1 text-white font-bold p-2 rounded-full px-10 mt-4">Signup</button>
     </form>
@@ -88,7 +107,7 @@
 </section>
 <div class="relative flex min-h-screen flex-row justify-center overflow-hidden">
   <div class="w-full">
-    <img src="/images/index-big.png" class="object-cover h-full" alt="">
+    <img src="/images/index-page-pink.jpg" class="object-cover h-full" alt="">
   </div>
   <div class="w-full">
     <div class="p-16">

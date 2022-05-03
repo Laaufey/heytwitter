@@ -16,12 +16,6 @@ module.exports = {
     },
 
     extend: {
-      screens: {
-        'sm': '640px',
-        'md': '768',
-        'lg': '1024',
-        'xl': '1280',
-      },
       colors:{
         // "blue1": "#1DA1F2",
         "blue1": "#ff5c8a",
@@ -38,6 +32,9 @@ module.exports = {
         "large": "20rem",
         "font-2xs": "0.5rem",
         "max": "24rem"
+      },
+      margin:{
+        '25.5rem': '25.5rem'
       }
     },
   },

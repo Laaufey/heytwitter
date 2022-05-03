@@ -1,6 +1,32 @@
 % include("header") 
 
-
+  <section id="edit_profile_modal" class="fixed w-screen h-screen z-10 hidden" data-modal="edit_tweet">
+    <div
+      class="absolute h-full w-full bg-black bg-opacity-50"
+      onclick="editProfileModal('#edit_profile_modal')"
+    ></div>
+    <div class="relative z-10 p-4 bg-white  rounded-lg w-1/3 h-64 mx-auto mt-20">
+      <ion-icon name="close" size="large"></ion-icon>
+      <form
+        action="/users/{{user['user_id']}}" action="put"
+        id="{{user['user_id']}}"
+        class="flex flex-col relative p-4 rounded mt-4"
+        onsubmit="editProfilePicture(); return false"
+        data-form="edit_profile">
+          <label for="tweet_text" class="w-full font-medium text-gray-500 py-2">Edit Tweet</label>
+          <input name="user_img" type="file">
+          <button
+            id="{{user['user_id']}}"
+            class="absolute bottom-6 right-6 px-8 py-2 bg-blue2 text-white rounded-full"
+            type="submit" data-default="Tweet" data-await="Tweeting..."
+            onclick="editProfileModal()"
+          >
+            Update
+          </button>
+        <!-- </div> -->
+      </form>
+    </div>
+  </section>
   <section id="tweetModal" class="fixed w-screen h-screen z-10 hidden">
     <div
       class="absolute h-full w-full bg-black bg-opacity-50"
@@ -20,9 +46,9 @@
     >
     <div class="relative flex items-center p-4 pr-4">
       <img
-        src="/images/default.jpeg"
+        src="/images/{{user['user_img']}}"
         alt=""
-        class="w-10 rounded-full"
+        class="w-10 h-10 object-cover flex-none rounded-full"
       />
       <div class="flex-1 pl-2">
         
@@ -66,6 +92,24 @@
               </a>
             </div>
             % end
+            <div class="mt-6">
+              <a
+                class="text-xl hover:bg-lighter rounded-full py-3 px-6"
+                href="/{{user['user_name']}}"
+              >
+                <i class="far fa-user fa-fw"></i>
+                <span class="ml-2 hidden lg:inline-block">Profile</span>
+              </a>
+            </div>
+            <div class="mt-6">
+              <a
+                class="text-xl hover:bg-lighter rounded-full py-3 px-6"
+                href="/home"
+              >
+                <i class="fas fa-ellipsis-h fa-fw"></i>
+                <span class="ml-2 hidden lg:inline-block">More</span>
+              </a>
+            </div>
           </div>
           <button
             onclick="toggleTweetModal()"
@@ -77,9 +121,9 @@
         <div class="mt-auto" onclick="toggleModal()">
           <div class="relative flex items-center p-2 pr-4 hover:bg-slate-200 rounded-full">
             <img
-              src="/images/default.jpeg"
+              src="/images/{{user['user_img']}}"
               alt=""
-              class="w-10 rounded-full"
+              class="object-cover flex-none w-10 h-10 rounded-full"
             />
             <div class="flex-1 pl-2">
               
@@ -101,16 +145,18 @@
     % # end left % # center
     <div class="w-2/4 min-h-screen border-x border-gray-300">
       <div class="relative px-14 py-2">
-        <ion-icon name="arrow-back-outline" class="absolute top-4 left-4"></ion-icon>
+        <a class="cursor-pointer" href="/home"><ion-icon name="arrow-back-outline" class="absolute top-4 left-4"></ion-icon></a>
         <h1 class="font-bold text-2xl">{{user_profile["user_first_name"]}} {{user_profile["user_last_name"]}}</h1>
-        <p class="font-thin">0 Tweets</p>
+        <p class="font-thin">{{tweets_count}} Tweets</p>
       </div>
       <div class="relative">
-        <img src="/images/default.jpeg" class="absolute rounded-full w-32 h-32 border-4 border-white top-40 left-6" alt="">
-        <button class="absolute rounded-full hover:bg-gray-300 text-gray-700 font-bold border p-2 px-4 right-2 top-64 text-sm border-gray-700">Edit profile</button>
+        <img src="/images/{{user_profile['user_img']}}" data-img class="absolute flex-none object-cover rounded-full w-32 h-32 border-4 border-white top-40 left-6" alt="">
+        % if user_profile["user_name"] == user["user_name"]:
+        <button data-id="{{user['user_id']}}" class="absolute rounded-full hover:bg-gray-300 text-gray-700 font-bold border p-2 px-4 right-2 top-64 text-sm border-gray-700" onclick="editProfileModal('#edit_profile_modal')">Edit profile</button>
+        % end
         <img
-          class="object-cover w-full max-h-60 mb-12"
-          src="/images/default.jpeg"
+          class="object-cover flex-none w-full max-h-60 mb-12"
+          src="/images/cover.png"
           alt=""
             />
         <div class="pl-4">
@@ -131,42 +177,74 @@
       </nav>
       <div data-hook="tweets" id="tweets" class="voices mt-4">
         % for tweet in tweets:
-          <form id="{{tweet['tweet_id']}}" class="p-4 border-t border-slate-200">
-            <div class="flex">
-              <img
-                class="flex-none w-12 h-12 rounded-full"
-                src="/images/{{tweet['user_img']}}"
-                alt=""
-              />
-              <div class="w-full relative pl-4">
-              <ion-icon name="ellipsis-horizontal" class="absolute right-2 top-2 hover:bg-blue2/20 hover:text-blue1 transition ease-in-out duration-300 p-2 rounded-full"></ion-icon>
-                <p class="font-bold"><a href="/{{tweet['user_name']}}">@{{tweet["user_name"]}}</a></p>
-                <p class="font-thin">
-                  {{tweet["user_first_name"]}} {{tweet["user_last_name"]}}
-                </p>
-                <div class="showDelete">
-                  <button class="text-sm text-gray-100" onclick="deleteTweet(`{{tweet['tweet_id']}}`)">Delete</button>
-                  <button class="text-sm text-gray-100" id="edit" class="edit">Edit</button>
-                  <!-- <button data-action="edit" onclick="editTweet(`{{tweet['tweet_id']}}`)">Edit</button> -->
-                </div>
-
-                <div id="text_{{tweet['tweet_id']}}" class="pt-2">{{tweet["tweet_text"]}}</div>
-                % if tweet["tweet_image"]:
-                  <img
-                    class="mt-2 w-full object-cover h-80"
-                    src="/images/{{tweet['tweet_image']}}"
-                  />
+        <div id="{{tweet['tweet_id']}}" class="p-4 border-b border-slate-200">
+          <div class="flex">
+            <img
+              class="object-cover flex-none w-12 h-12 rounded-full"
+              src="/images/{{tweet['user_img']}}"
+              alt=""
+            />
+            <div class="w-full relative pl-4">
+            <button class="absolute right-2" onclick="openDropDown()"><ion-icon id="{{tweet['tweet_id']}}" name="ellipsis-horizontal" class="absolute right-2 top-2 hover:bg-blue2/20 hover:text-blue1 cursor-pointer transition ease-in-out duration-300 p-2 rounded-full"></ion-icon></button>
+            <div id="drop-down-{{tweet['tweet_id']}}" class="drop-down absolute right-10 top-2 hidden z-20 bg-white divide-y  rounded shadow w-40 ">
+              <ul class="py-1 text-sm" aria-labelledby="dropdownLeftStartButton">
+                <li>
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-100  text-blue1">Follow @{{tweet['user_name']}}</a>
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-100  text-blue1">Report</a>
+                </li>
+                % if tweet["user_name"] == user["user_name"]:
+                <li>
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-100  text-blue1">                  
+                    <button class="text-sm" data-id="{{tweet['tweet_id']}}" onclick="openEditModal('#tweet_update_modal'); updateModalContent();">Edit</button>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="block px-4 py-2 hover:bg-gray-100  text-blue1"><ion-icon onclick="deleteTweet(`{{tweet['tweet_id']}}`)" class="ml-auto text-blue1 pr-3 cursor-pointer" name="trash-outline"></ion-icon>Delete</a>
+                </li>
                 % end
-                <div class="flex gap-12 w-full mt-4 text-lg">
-                  <i class="fa-solid fa-message ml-auto"></i>
-                  <i class="fa-solid fa-heart"></i>
-                  <i class="fa-solid fa-retweet"></i>
-                  <i class="fa-solid fa-share-nodes"></i>
-                </div>
-              </div>
+              </ul>
             </div>
-          </form>
-        % end
+              <p class="font-thin text-xs"><a class="font-bold text-lg" href="/{{tweet['user_name']}}">{{tweet["user_first_name"]}} {{tweet["user_last_name"]}}</a> @{{tweet["user_name"]}}</p>
+
+              <div class="showDelete">
+                <!-- <button class="text-sm text-gray-200" data-id="{{tweet['tweet_id']}}" onclick="openEditModal('#tweet_update_modal'); updateModalContent();">Edit</button> -->
+              </div>
+              <!-- <button onclick="toggleEditModal()">Edit</button> -->
+
+              <div data-text class="pt-2">{{tweet["tweet_text"]}}</div>
+              % if tweet["tweet_image"]:
+                <img
+                  class="mt-2 w-full object-cover flex-none h-80"
+                  src="/images/{{tweet['tweet_image']}}"
+                />
+              % end
+              
+              <div class="flex gap-12 w-full mt-4 text-lg">
+                % if tweet["user_name"] == user["user_name"]:
+                <ion-icon class="p-2 ml-auto text-gray-500 hover:text-blue1 cursor-pointer" name="trash-outline" onclick="deleteTweet(`{{tweet['tweet_id']}}`)"></ion-icon>
+                % else:
+                <ion-icon class="p-2 ml-auto text-gray-500 hover:text-blue1 cursor-pointer" name="sync-outline" ></ion-icon>
+                % end
+                <ion-icon class="p-2 text-gray-500 hover:text-blue1 cursor-pointer" name="chatbox-ellipses-outline"></ion-icon>
+                <div class="cursor-pointer flex">
+                % if tweet["tweet_id"] in user_likes:
+                <ion-icon id="unlike-btn-{{tweet['tweet_id']}}" onclick="unlikeTweet(`{{tweet['tweet_id']}}`)" class="transition ease-in-out duration-300 hover:bg-blue2/20 p-2 text-blue1 cursor-pointer rounded-full" name="heart"></ion-icon>  
+                <ion-icon id="like-btn-{{tweet['tweet_id']}}" onclick="likeTweet(`{{tweet['tweet_id']}}`)" class="transition ease-in-out duration-300 hover:bg-blue2/20 p-2 text-gray-500 hover:text-blue1 cursor-pointer rounded-full hidden" name="heart-outline"></ion-icon> 
+                % else:
+                <ion-icon id="unlike-btn-{{tweet['tweet_id']}}" onclick="unlikeTweet(`{{tweet['tweet_id']}}`)" class="transition ease-in-out duration-300 hover:bg-blue2/20 p-2 text-blue1 cursor-pointer rounded-full hidden" name="heart"></ion-icon>  
+                <ion-icon id="like-btn-{{tweet['tweet_id']}}" onclick="likeTweet(`{{tweet['tweet_id']}}`)" class="transition ease-in-out duration-300 hover:bg-blue2/20 p-2 text-gray-500 hover:text-blue1 cursor-pointer rounded-full" name="heart-outline"></ion-icon>             
+                % end
+                <span class="{{ 'hidden' if tweet['count'] == 0 else ''}} py-2 px-1 hover:text-blue1 text-gray-500 text-sm" id="count-{{tweet['tweet_id']}}">{{tweet["count"]}}</span>  
+                </div>
+                <ion-icon class="p-2 hover:text-blue1 cursor-pointer" name="share-outline"></ion-icon>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      % end
       </div>
     </div>
     % # end center % # right
@@ -203,16 +281,16 @@
         </div>
         <div class="h-1/2 bg-gray-100 rounded-2xl overflow-hidden">
           <h1 class="font-bold text-xl p-4">Who to follow</h1>
-          % for follow in whoToFollow:
+          % for follow in users:
           <div class="flex items-center p-2">
             <img
-              src="/images/{{follow['img']}}.jpeg"
+              src="/images/{{follow['user_img']}}"
               alt=""
-              class="w-12 rounded-full"
+              class="object-cover flex-none w-12 h-12 rounded-full"
             />
             <div class="flex-1 pl-2">
-              <p class="font-bold">{{follow["name"]}}</p>
-              <p class="font-thin">{{follow["account"]}}</p>
+              <p class="font-bold">{{follow["user_first_name"]}}</p>
+              <p class="font-thin">{{follow["user_name"]}}</p>
             </div>
             <button class="px-4 py-1 bg-white rounded-full">Follow</button>
           </div>

@@ -23,6 +23,11 @@ import tweet_post      # POST
 import tweet_delete    # POST
 import tweet_put
 
+import like_post
+import like_delete
+
+import editProfile_put
+
 ##############################
 
 
@@ -122,4 +127,4 @@ try:
     import production
     application = default_app()
 except Exception as ex:
-    run(host="127.0.0.1", port=3333, debug=True, reloader=True, server="paste")
+    run(host="127.0.0.1", port=3333, debug=True, reloader=True)

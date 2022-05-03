@@ -15,6 +15,9 @@ function validate(callback){
         ){
           element.classList.add("validate_error")
           element.style.backgroundColor = validate_error
+          console.log(element)
+          element.nextElementSibling.classList.remove("hidden")
+
         }
       break;
       case "int":
@@ -31,6 +34,7 @@ function validate(callback){
         if( ! re.test(element.value.toLowerCase()) ){
           element.classList.add("validate_error")
           element.style.backgroundColor = validate_error
+          element.nextElementSibling.classList.remove("hidden")
         }
       break;
       case "re":       

@@ -14,38 +14,38 @@
   % # main page
   <div class="flex w-4/5 mx-auto">
     % # left
-    <div class="w-1/4">
-      <div class="fixed h-screen w-1/5 px-8 flex flex-col py-6">
-        <div class="">
-          <div class="pl-5">
-            <i class="fa-brands fa-twitter fa-fw text-4xl text-blue1"></i>
-          </div>
-          <div class="">
-            
-          </div>
-
+    <div class="w-1/4 py-6">
+      <div class="h-full bg-blue1 w-10/12 p-4 flex flex-col rounded-3xl">
+        <div class="flex items-center">
+          <i class="fa-brands fa-twitter fa-fw text-4xl text-white"></i>
+          <h1 class="pl-4 font-bold text-white text-2xl">Glitter</h1>
         </div>
-        <div class="mt-auto" onclick="toggleModal()">
-          <div class="relative flex items-center p-2 pr-4 hover:bg-slate-200 rounded-full">
-            <img
-              src="/images/default.jpeg"
-              alt=""
-              class="w-10 rounded-full"
-            />
-            <div class="flex-1 pl-2">
-              
-              <p class="font-bold">
-                {{user["user_first_name"]}} {{user["user_last_name"]}}
-              </p>
-              
-                <ion-icon name="ellipsis-horizontal" class="absolute right-3 top-6"></ion-icon>
-              
-              <p class="font-light text-gray-500 text-sm">
-                @{{user["user_name"]}}
-              </p>
-              <a href="/logout">Logout</a>
-            </div>
-          </div>
+        <div class="mt-10 text-xl  flex flex-col text-white">
+          <a class="p-2 rounded-full hover:bg-gray-200/30" href="">
+            <ion-icon class="px-4" name="layers-outline"></ion-icon>
+            Dashboard
+          </a>
+          <a class="p-2 rounded-full hover:bg-gray-200/30" href="">
+            <ion-icon class="px-4" name="people-outline"></ion-icon>
+            Users
+          </a>
+          <a class="p-2 rounded-full hover:bg-gray-200/30" href="">
+            <ion-icon class="px-4" name="chatbubble-ellipses-outline"></ion-icon>
+            Tweets
+          </a>
+          <a class="p-2 rounded-full hover:bg-gray-200/30" href="">
+            <ion-icon class="px-4" name="chatbubbles-outline"></ion-icon>
+            Comments
+          </a>
+          <a class="p-2 rounded-full hover:bg-gray-200/30" href="">
+            <ion-icon class="px-4" name="heart-outline"></ion-icon>
+            Likes
+          </a>
+          <a class="p-2 rounded-full hover:bg-gray-200/30 " href="/logout">
+            <ion-icon class="px-4" name="log-out-outline"></ion-icon>
+            Logout
+          </a>
+          
         </div>
       </div>
     </div>
@@ -90,7 +90,6 @@
 
               <div class="showDelete">
                 <!-- <button class="text-sm text-gray-100" onclick="deleteTweet(`{{tweet['tweet_id']}}`)">Delete</button> -->
-                <button class="text-sm text-gray-200" data-id="{{tweet['tweet_id']}}" onclick="openEditModal('#tweet_update_modal'); updateModalContent();">Edit</button>
                 <!-- <button data-action="edit" onclick="editTweet(`{{tweet['tweet_id']}}`)">Edit</button> -->
               </div>
               <!-- <button onclick="toggleEditModal()">Edit</button> -->
@@ -103,7 +102,9 @@
                 />
               % end
               <div class="flex gap-12 w-full mt-4 text-lg">
+                % if user["user_name"] == "admin":
                 <ion-icon class="ml-auto hover:text-blue1 cursor-pointer" name="trash-outline" onclick="deleteTweet(`{{tweet['tweet_id']}}`)"></ion-icon>
+                % end
                 <ion-icon class="hover:text-blue1 cursor-pointer" name="chatbox-ellipses-outline"></ion-icon>
                 <ion-icon class="hover:text-blue1 cursor-pointer" name="heart-outline"></ion-icon>
                 <ion-icon class="hover:text-blue1 cursor-pointer" name="sync-outline"></ion-icon>                  

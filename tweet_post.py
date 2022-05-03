@@ -1,4 +1,4 @@
-from bottle import post, response, redirect, request
+from bottle import post, response, request
 import g
 import imghdr
 import uuid
@@ -107,7 +107,8 @@ def _():
         INSERT INTO tweets (tweet_id, user_first_name, user_last_name, user_name, user_img, fk_user_id, tweet_date, tweet_text, tweet_image)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, tuple(tweet.values()))
-
+        print("######"*5)
+        print(decoded_session)
         conn.commit()
         response.status = 201
         # Make sure that the image is actually a valid image

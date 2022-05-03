@@ -1,6 +1,7 @@
 from bottle import post, redirect, request, response
 import g
 import jwt
+import uuid
 
 import re
 import mysql.connector
@@ -114,9 +115,9 @@ def _():
 
     # Default picture for everybory
     user_img = "../images/default.jpeg"
-
     # Create User
     user = {
+        "user_id": str(uuid.uuid4()),
         "user_name": user_name,
         "user_first_name": user_first_name,
         "user_last_name": user_last_name,
@@ -127,8 +128,8 @@ def _():
 
     db.execute("""
         
-            INSERT INTO users (user_name, user_first_name, user_last_name, user_email, user_password, user_img)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO users (user_id, user_name, user_first_name, user_last_name, user_email, user_password, user_img)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, tuple(user.values()))
 
     conn.commit()

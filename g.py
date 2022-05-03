@@ -43,9 +43,6 @@ tabs = [
         "id": "bookmarks", "href": "home"},
     {"icon": "fas fa-clipboard-list fa-fw",
         "title": "Lists", "id": "lists", "href": "home"},
-    {"icon": "far fa-user fa-fw", "title": "Profile",
-        "id": "profile", "href": "home"},
-    {"icon": "fas fa-ellipsis-h fa-fw", "title": "More", "id": "more", "href": "home"}
 ]
 
 people = [
