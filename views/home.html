@@ -64,12 +64,12 @@
       class="absolute h-full w-full bg-black bg-opacity-50"
       onclick="openEditModal('#tweet_update_modal')"
     ></div>
-    <div class="relative z-10 p-4 bg-white  rounded-lg w-1/3 h-64 mx-auto mt-20">
-      <ion-icon name="close" size="large"></ion-icon>
+    <div class="relative z-10 p-4 bg-white  rounded-lg w-1/3 h-52 mx-auto mt-20">
+      <ion-icon class="cursor-pointer hover:text-blue1" name="close" size="large" onclick="openEditModal('#tweet_update_modal')"></ion-icon>
       <form
         action="/tweets" action="put"
         id="edit-tweet"
-        class="flex flex-col relative p-4 rounded mt-4"
+        class="flex flex-col relative p-4 rounded"
         onsubmit="updateTweet(); return false"
         data-form="edit_tweet">
         <div class="flex">
@@ -78,7 +78,6 @@
           src="/images/{{user['user_img']}}"
           alt=""
           /> 
-          <label for="tweet_text" class="w-full font-medium text-gray-500 py-2"></label>
           <input
             name="tweet_text"
             id="tweet_text_update"
