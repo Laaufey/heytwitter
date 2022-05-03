@@ -84,7 +84,7 @@
             <div class="mt-6">
               <a
 
-                class="text-lg hover:bg-lighter rounded-full py-3 px-6"
+                class="text-lg hover:bg-gray-100 rounded-full py-3 px-6"
                 href="/{{tab['href']}}"
               >
                 <i class="{{tab['icon']}}"></i>
@@ -94,7 +94,7 @@
             % end
             <div class="mt-6">
               <a
-                class="text-lg hover:bg-lighter rounded-full py-3 px-6"
+                class="text-lg hover:bg-gray-100 rounded-full py-3 px-6"
                 href="/{{user['user_name']}}"
               >
                 <i class="far fa-user fa-fw"></i>
@@ -103,7 +103,7 @@
             </div>
             <div class="mt-6">
               <a
-                class="text-lg hover:bg-lighter rounded-full py-3 px-6"
+                class="text-lg hover:bg-gray-100 rounded-full py-3 px-6"
                 href="/home"
               >
                 <i class="fas fa-ellipsis-h fa-fw"></i>
@@ -113,7 +113,7 @@
           </div>
         </div>
         <div class="mt-auto cursor-pointer" onclick="toggleModal()">
-          <div class="relative flex items-center p-2 pr-4 hover:bg-slate-200 rounded-full">
+          <div class="relative flex items-center p-2 pr-4 hover:bg-gray-100 rounded-full">
             <img
               src="/images/{{user['user_img']}}"
               alt=""
@@ -248,22 +248,22 @@
           <form name="search" class="relative" onsubmit="returnFalse()">
             <i class="fas fa-search absolute top-4 left-4"></i>
             <input
-              class="w-full flex-grow h-12 rounded-full placeholder:text-gray-700 bg-gray-100 pl-12 outline-none"
+              class="w-full flex-grow h-12 rounded-full placeholder:text-gray-700 bg-gray-50 pl-12 outline-none"
               type="text"
               placeholder="Search Glitter"
             />
           </form>
         </div>
-        <div class="h-1/2 flex-grow bg-gray-100 rounded-2xl overflow-hidden">
+        <div class="h-1/2 flex-grow bg-gray-50 rounded-2xl overflow-hidden">
           <h1 class="font-bold text-xl p-4">Trends for you</h1>
           % for trend in trends:
           <div
-            class="p-1 hover:bg-gray-300 cursor-pointer flex justify-between"
+            class="p-1 hover:bg-gray-100 cursor-pointer flex justify-between"
           >
             <div class="px-4">
-              <p class="font-thin">{{trend["category"]}}</p>
-              <p class="font-bold">{{trend["title"]}}</p>
-              <p class="font-thin">{{trend["tweets_counter"]}}</p>
+              <p class="text-gray-500 text-sm">{{trend["category"]}}</p>
+              <p class="font-bold">#{{trend["title"]}}</p>
+              <p class="text-gray-500 text-sm">{{trend["tweets_counter"]}}</p>
             </div>
             <div>
               <i
@@ -273,7 +273,7 @@
           </div>
           % end
         </div>
-        <div class="h-1/2 bg-gray-100 rounded-2xl overflow-hidden">
+        <div class="h-1/2 bg-gray-50 rounded-2xl overflow-hidden">
           <h1 class="font-bold text-xl p-4">Who to follow</h1>
           % for follow in users:
           <div class="flex items-center p-2">
@@ -286,7 +286,8 @@
               <p class="font-bold">{{follow["user_first_name"]}}</p>
               <p class="font-thin">{{follow["user_name"]}}</p>
             </div>
-            <button class="px-4 py-1 bg-white rounded-full">Follow</button>
+            <button class=" xl:hidden px-2 py-1 bg-gray-800 text-white text-sm font-semibold rounded-full">+</button>
+            <button class="hidden xl:inline-block px-4 py-2 bg-gray-800 text-white text-sm font-semibold rounded-full">Follow</button>
           </div>
           % end
         </div>
