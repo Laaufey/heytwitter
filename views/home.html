@@ -221,7 +221,7 @@
       <div class="px-4 border-b border-gray-300">
         <form
         class="flex flex-col relative p-4rounded mt-4"
-          onsubmit="sendTweet(); return false">
+          onsubmit="sendTweet(); validate(); return false">
           <div class="flex">
             <img
             class="flex-none object-cover w-12 h-12 rounded-full"
@@ -233,7 +233,11 @@
                 class="w-full h-12 text-gray-800 rounded p-4 outline-none placeholder:text-gray-800"
                 type="text"
                 placeholder="What is in your mind ?"
+                data-validate="str"
+                data-min="2"
               />
+              <p id="password-wrong" class="text-red-600 text-xs hidden">Please write a longer tweet</p>
+
             </div>
             <div class="flex mt-8">
               

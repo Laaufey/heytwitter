@@ -69,7 +69,7 @@ DB_CONFIG = {
     "host": "127.0.0.1", "port": 8889, "user": "root", "password": "root", "database": "heytwitter"
 }
 
-TWEET_TEXT_MIN_LENGTH = 1
+TWEET_TEXT_MIN_LENGTH = 2
 TWEET_TEXT_MAX_LENGTH = 255
 
 USER_NAME_MAX_LENGTH = 30
