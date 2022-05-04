@@ -1,4 +1,4 @@
-from bottle import default_app, get, run, static_file, view, request
+from bottle import default_app, get, post, run, static_file, view, request
 import g
 from g import tabs, trends, tweets, whoToFollow
 from password import gmail_password
@@ -73,7 +73,7 @@ def _():
 ##############################
 
 
-@get("/send-email")
+@post("/send-email")
 def _():
     sender_email = "catmoms34@gmail.com"
     receiver_email = "catmoms34@gmail.com"

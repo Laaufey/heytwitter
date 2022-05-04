@@ -2,7 +2,11 @@ from bottle import post, redirect, request, response
 import g
 import jwt
 import uuid
-
+from password import gmail_password
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import re
 import mysql.connector
 from g import (USER_FIRST_NAME_MAX_LENGTH, USER_FIRST_NAME_MIN_LENGTH, USER_LAST_NAME_MAX_LENGTH, USER_LAST_NAME_MIN_LENGTH,
@@ -141,6 +145,59 @@ def _():
     response.set_cookie("token", token)
 
     print("user created")
-    return redirect("/home")
+
+    sender_email = "catmoms34@gmail.com"
+    receiver_email = user_email
+    password = gmail_password
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Welcome to Glitter"
+    message["From"] = "Glitter Team"
+    message["To"] = receiver_email
+
+    # Create the plain-text and HTML version of your message
+    text = """\
+    Hi, 
+    Thank you.
+    """
+
+    html = f"""\
+    <html>
+    <body>
+        <h1 style="color:#ff5c8a;"> Welcome to Glitter {user_first_name}! </h1>
+        <h3>How are you?</h3>
+        <p>
+        We gladly welcome you to the Glitter world! 
+        <br/> 
+        If you have any questions, don't hesitate to contack us.
+        </p>
+        <h2><a style="text-decoration:none; color:#ff5c8a;" href="laufey.eu.pythonanywhere.com">Let's get started</a></h2>
+    </body>
+    </html>
+    """
+
+    # Turn these into plain/html MIMEText objects
+    part1 = MIMEText(text, "plain")
+    part2 = MIMEText(html, "html")
+
+    # Add HTML/plain-text parts to MIMEMultipart message
+    # The email client will try to render the last part first
+    message.attach(part1)
+    message.attach(part2)
+
+    # Create secure connection with server and send email
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+        try:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+            return "yes, email sent"
+        except Exception as ex:
+            print("ex")
+            return "uppps... could not send the email"
+        finally:
+
+            ##############################
+            return redirect("/home")
     # return redirect(f"/home?user_email={user_email}&user_name={user_name}&user_last_name={user_last_name}")
     # return f"/index?user-email={user_email}&user-name={user_name}&user-last-name={user_last_name}"
